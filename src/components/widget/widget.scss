@@ -1,0 +1,13 @@
+.percentage {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    &.positive {
+      color: green;
+    }
+    
+    &.negative {
+      color: red;
+    }
+}
