@@ -6,8 +6,7 @@ import Products from "./pages/products"
 import New from "./pages/new"
 
 import "./components/style/style.scss"
-
-import {userInputs, productInputs} from "./data/data"
+import UpdateProduct from "./pages/updateProduct/updateProduct";
 
 
 function App() {
@@ -19,7 +18,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard /> } />
           <Route path="/products" element={<Products />} />
-          <Route  path="products/new" element={<New inputs={productInputs} title="Add New product" />  }   />
+          <Route  path="products/new" element={<New />  }   />
+          <Route  path="products/:id" element={<UpdateProduct />  }   />
         </Routes>
       </Router>
     </div>

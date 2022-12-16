@@ -1,17 +1,27 @@
 import {useState} from "react"
-import "./new.scss";
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios'
+
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import axios from 'axios'
+import "./updateProduct.scss"
 
 
-const New = () => {
-    const urls = `https://homeo-api.onrender.com/api/products`;
-    const [category, setCategory] = useState("")
-    const [availability, setAvailability] = useState("")
-    const [image, setImage] = useState("")
-    const [viewImage, setViewImage] = useState("")
+
+
+
+const UpdateProduct = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    
+    const urls = `https://homeo-api.onrender.com/api/products`.concat(`/${location.state.id}`);
+
+    const [category, setCategory] = useState(location.state.category)
+    const [availability, setAvailability] = useState(location.state.availability)
+    const [image, setImage] = useState(location.state.image)
+    const [viewImage, setViewImage] = useState(location.state.image)
+
 
     const showImage = (e) => {
         if(e.target.files.length !== 0){
@@ -22,11 +32,11 @@ const New = () => {
 
     const [form, setForm] = useState(
         {
-            name: "",
-            description: "",
-            stock: 0,
-            price: 0,
-            additionalInformation: ""
+            name: location.state.name,
+            description: location.state.description,
+            stock: location.state.stock,
+            price: location.state.price,
+            additionalInformation: location.state.additionalInformation
         }
     )
 
@@ -48,7 +58,7 @@ const New = () => {
         setAvailability(e.target.value)
     }
 
-    const addProduct = async (e) => {
+    const updateProduct = async (e) => {
         e.preventDefault();
         console.log("vibe")
         const data = new FormData();
@@ -59,7 +69,7 @@ const New = () => {
             const uploadImage = await axios.post("https://api.cloudinary.com/v1_1/dbedwytfr/image/upload", data);
             const { url } = uploadImage.data;
 
-            await axios.post( 
+            await axios.put( 
                 urls, 
                 { 
                     image: url,
@@ -90,6 +100,7 @@ const New = () => {
         } catch (error) {
             console.log(error)
         }
+        navigate("/products")
     }
 
 
@@ -115,7 +126,8 @@ const New = () => {
                                         src={
                                             viewImage 
                                             ? viewImage
-                                            : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"} alt="" 
+                                            : location.state.image
+                                        } alt="" 
                                     />
 
                                     <input
@@ -140,7 +152,7 @@ const New = () => {
                                         name="name" 
                                         value={name}
                                         onChange={handleChange}
-                                        placeholder="eg. Berkins"
+                                        placeholder={location.state.name}
                                         className="py-2 px-4 4xs:w-[100%] sm:w-[70%] outline-none border-[1px] border-black rounded-[5px] " 
                                     />
 
@@ -151,7 +163,7 @@ const New = () => {
                                         name="description"
                                         value={description}
                                         onChange={handleChange}
-                                        placeholder=" eg. lorem-2 "
+                                        placeholder={location.state.description}
                                         className="py-2 px-4 4xs:w-[100%] sm:w-[70%] outline-none border-[1px] border-black rounded-[5px] " 
                                     ></textarea>
 
@@ -192,7 +204,7 @@ const New = () => {
                                         name="price" 
                                         value={price}
                                         onChange={handleChange}
-                                        placeholder="eg. $200"
+                                        placeholder={location.state.price}
                                         className="py-2 px-4 4xs:w-[100%] sm:w-[70%] outline-none border-[1px] border-black rounded-[5px] " 
                                     />
 
@@ -203,14 +215,14 @@ const New = () => {
                                         name="stock" 
                                         value={stock}
                                         onChange={handleChange}
-                                        placeholder="eg. 2"
+                                        placeholder={location.state.stock}
                                         className="py-2 px-4 4xs:w-[100%] sm:w-[70%] outline-none border-[1px] border-black rounded-[5px] " 
                                     />
 
                                     <label className="mb-2 mt-12 flex text-xl font-[500] text-gray-600 ">Additional Information</label>
                                     <textarea
                                         rows="6"
-                                        placeholder=" eg. lorem-2 "
+                                        placeholder={location.state.additionalInformation}
                                         name="additionalInformation"
                                         value={additionalInformation}
                                         onChange={handleChange}
@@ -221,7 +233,7 @@ const New = () => {
                                 </div>
 
                                 <div className="w-[100%] flex flex-row justify-center my-20 rounded-[5px] ">
-                                    <button onClick={(e) => addProduct(e)} type="submit" className="bg-[teal] text-white w-[50%] py-4 flex flex-row justify-center items-center rounded-[3px] ">Place Order</button>
+                                    <button onClick={(e) => updateProduct(e)} type="submit" className="bg-[teal] text-white w-[50%] py-4 flex flex-row justify-center items-center rounded-[3px] ">Place Order</button>
                                 </div>
                             </form>
                         </div>
@@ -233,4 +245,4 @@ const New = () => {
     )
 }
 
-export default New;
+export default UpdateProduct;
